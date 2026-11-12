@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Housekeeping Dashboard</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap">
+<style>
+:root{--bg:#10192b;--side:#1a2338;--card:#1f2a42;--line:#2c3856;--tx:#e8edf7;--mut:#8e9bb8;--acc:#38bdf8;--ok:#34d399;--warn:#fbbf24;--bad:#f87171;--vio:#a78bfa;--hov:#26324f;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px);color-scheme:dark}
+:root[data-theme="light"]{--bg:#f1f4f9;--side:#fff;--card:#fff;--line:#dde3ee;--tx:#15203a;--mut:#62708f;--acc:#0284c7;--ok:#059669;--warn:#b45309;--bad:#dc2626;--vio:#7c3aed;--hov:#e8eef8;color-scheme:light}
+*{box-sizing:border-box}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+body{margin:0;background:var(--bg);color:var(--tx);font:14px/1.45 "Plus Jakarta Sans",system-ui,sans-serif}
+.app{display:flex;min-height:100vh}
+aside{width:270px;background:var(--side);border-right:1px solid var(--line);padding:20px 12px;position:sticky;top:env(safe-area-inset-top,0px);height:100vh;overflow-y:auto;flex:none}
+.brand{text-align:center;padding-bottom:16px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.logo{width:150px;border-radius:12px;background:#fff;padding:8px 10px;margin:0 auto 12px}.logo img{display:block;width:100%;height:auto}
+.brand b{font-size:18px;display:block}.brand small{color:var(--acc);font-weight:600}
+.grp{color:var(--mut);font-size:12px;font-weight:600;margin:20px 10px 6px}
+.nav{display:flex;align-items:center;gap:12px;width:100%;padding:11px 12px;border:0;border-left:3px solid transparent;border-radius:10px;background:none;color:var(--mut);font:inherit;font-size:14px;text-align:left;cursor:pointer}
+.nav:hover{background:var(--hov);color:var(--tx)}
+.nav.on{background:var(--hov);color:var(--acc);border-left-color:var(--acc);font-weight:600}
+.nav i{font-style:normal;font-size:18px;width:24px;text-align:center}
+main{flex:1;min-width:0;padding:20px 24px 40px}
+.top{display:flex;align-items:center;gap:12px;margin-bottom:18px;flex-wrap:wrap}
+.top h1{font-size:21px;margin:0;flex:1}
+.top small{color:var(--mut);display:block;font-weight:400;font-size:12px}
+.btn{background:var(--card);border:1px solid var(--line);color:var(--tx);border-radius:9px;padding:7px 12px;font:inherit;cursor:pointer}
+#menu{display:none}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;margin-bottom:14px}
+.kpi,.card{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px 16px}
+.kpi span{color:var(--mut);font-size:12px}.kpi b{display:block;font-size:26px;margin-top:2px}.kpi em{font-style:normal;font-size:12px}
+.g2{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:14px}
+.card h3{margin:0 0 12px;font-size:15px}
+.row{display:grid;grid-template-columns:120px 1fr 44px;gap:10px;align-items:center;margin:9px 0;font-size:13px}
+.bar{height:9px;border-radius:9px;background:var(--line);overflow:hidden}.bar i{display:block;height:100%;border-radius:9px}
+.row b{text-align:right}
+.wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse;font-size:13px}
+th{color:var(--mut);font-weight:600;text-align:left;padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+td{padding:9px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+tr:last-child td{border-bottom:0}
+.bd{display:inline-block;padding:2px 9px;border-radius:20px;font-size:12px;font-weight:600;background:color-mix(in srgb,var(--c) 18%,transparent);color:var(--c)}
+.leg{display:flex;flex-wrap:wrap;gap:8px 16px;margin-bottom:12px;font-size:12px;color:var(--mut)}
+.leg span:before{content:"";display:inline-block;width:10px;height:10px;border-radius:3px;background:var(--c);margin-right:6px}
+.fl{display:flex;align-items:center;gap:10px;margin:7px 0}
+.fl>b{width:44px;color:var(--mut);font-size:12px;flex:none}
+.rooms{display:flex;flex-wrap:wrap;gap:5px}
+.rm{width:44px;height:30px;border-radius:7px;display:grid;place-items:center;font-size:12px;font-weight:600;background:color-mix(in srgb,var(--c) 22%,transparent);color:var(--c);border:1px solid color-mix(in srgb,var(--c) 45%,transparent)}
+.note{color:var(--mut);font-size:12px;margin-top:16px}
+@media(max-width:820px){
+aside{position:fixed;z-index:20;left:0;top:0;bottom:0;height:auto;transform:translateX(-100%);transition:transform .2s;padding-top:calc(20px + env(safe-area-inset-top,0px))}
+aside.open{transform:none}
+#menu{display:block}main{padding:16px 14px 40px}
+.row{grid-template-columns:90px 1fr 40px}}
+@media(prefers-reduced-motion:reduce){aside{transition:none}}
+</style>
+</head>
+<body>
+<div class="app">
+<aside id="side">
+<div class="brand"><div class="logo"><img alt="SUMI Hotel" src="data:image/jpeg;base64,/9j/4AAQSkZJRgABAQEAYABgAAD/4QL4RXhpZgAATU0AKgAAAAgABAE7AAIAAAAPAAABSodpAAQAAAABAAABWpydAAEAAAAeAAAC0uocAAcAAAEMAAAAPgAAAAAc6gAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAUml6a3kgUmFtYWRoYW4AAAAFkAMAAgAAABQAAAKokAQAAgAAABQAAAK8kpEAAgAAAAMwMQAAkpIAAgAAAAMwMQAA6hwABwAAAQwAAAGcAAAAABzqAAAAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAyMDI2OjExOjEyIDE2OjI2OjQzADIwMjY6MTE6MTIgMTY6MjY6NDMAAABSAGkAegBrAHkAIABSAGEAbQBhAGQAaABhAG4AAAD/4QQhaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wLwA8P3hwYWNrZXQgYmVnaW49J++7vycgaWQ9J1c1TTBNcENlaGlIenJlU3pOVGN6a2M5ZCc/Pg0KPHg6eG1wbWV0YSB4bWxuczp4PSJhZG9iZTpuczptZXRhLyI+PHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj48cmRmOkRlc2NyaXB0aW9uIHJkZjphYm91dD0idXVpZDpmYWY1YmRkNS1iYTNkLTExZGEtYWQzMS1kMzNkNzUxODJmMWIiIHhtbG5zOmRjPSJodHRwOi8vcHVybC5vcmcvZGMvZWxlbWVudHMvMS4xLyIvPjxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSJ1dWlkOmZhZjViZGQ1LWJhM2QtMTFkYS1hZDMxLWQzM2Q3NTE4MmYxYiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIj48eG1wOkNyZWF0ZURhdGU+MjAyNi0xMS0xMlQxNjoyNjo0My4wMDY8L3htcDpDcmVhdGVEYXRlPjwvcmRmOkRlc2NyaXB0aW9uPjxyZGY6RGVzY3JpcHRpb24gcmRmOmFib3V0PSJ1dWlkOmZhZjViZGQ1LWJhM2QtMTFkYS1hZDMxLWQzM2Q3NTE4MmYxYiIgeG1sbnM6ZGM9Imh0dHA6Ly9wdXJsLm9yZy9kYy9lbGVtZW50cy8xLjEvIj48ZGM6Y3JlYXRvcj48cmRmOlNlcSB4bWxuczpyZGY9Imh0dHA6Ly93d3cudzMub3JnLzE5OTkvMDIvMjItcmRmLXN5bnRheC1ucyMiPjxyZGY6bGk+Uml6a3kgUmFtYWRoYW48L3JkZjpsaT48L3JkZjpTZXE+DQoJCQk8L2RjOmNyZWF0b3I+PC9yZGY6RGVzY3JpcHRpb24+PC9yZGY6UkRGPjwveDp4bXBtZXRhPg0KICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgIAogICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAgCiAgICAgICAgICAgICAgICAgICAgICAgICAgICAgICAg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"></div><b>SUMI Hotel Mangga Besar</b><small>HOUSEKEEPING</small></div>
+<div id="nav"></div>
+</aside>
+<main>
+<div class="top"><button class="btn" id="menu" aria-label="Menu">☰</button><h1 id="ttl"></h1><button class="btn" id="th">Tema</button></div>
+<div id="view"></div>
+<p class="note">Penjualan kamar dari DRR 10 dan 11 Nov 2026. Status kamar dan kinerja RA dari worksheet HK 11 Nov 2026. Checklist dan inspeksi SPV masih data contoh.</p>
+</main>
+</div>
+<script>
+var s=11,r=function(){return(s=s*16807%2147483647)/2147483647},pick=function(a){return a[Math.floor(r()*a.length)]};
+var ST={VI:["Inspected",""],VC:["Vacant Clean",""],OC:["Occupied Clean",""],OD:["Occupied Dirty",""],VD:["Vacant Dirty",""],OOO:["Out of Order",""]};
+var COL={VI:"var(--ok)",VC:"var(--acc)",OC:"var(--vio)",OD:"var(--warn)",VD:"var(--bad)",OOO:"var(--mut)"};COL.SR="#fb923c";ST.SR=["Service Refused",""];var wf="";var tm=function(s){var a=s.split(":");return a[0]*60+ +a[1]};
+var RD=[["Standard Room",[211,213,216,301,302,303,304,305,307],[214,215,306,308]],["Business Room",[120,121,122,123,124,125,126,127,128,201,202,203,204,205,206,207,208,209,210,212,217,218],[129,130,131]],["Deluxe Double Room",[115,117,132],[104,106,108,110,112,114,116,118]],["Deluxe Twin Room",[101,103,105,107,109,111,113],[102]],["New Business Room",[219,220,221,222],[]]];
+var rooms=[];RD.forEach(function(t){[1,0].forEach(function(sm){t[sm?1:2].forEach(function(n){var x=r();rooms.push({n:n,f:Math.floor(n/100),t:t[0],sm:sm,k:"OC"})})})});rooms.sort(function(a,b){return a.n-b.n});
+var DRR={tgl:"11 Nov 2026",sold:57,occ:"93,44",guest:82,res:18,canc:2,walk:7,eco:1,seg:[["Individual",47],["WIG",7],["OTA",3]]};
+var WS="117 D OD OC 10:17 10:23|118 D OD OC 10:44 10:51|120 D OD OC 09:34 09:40|121 D OD OC 09:28 09:33|122 D OD SR|123 D OD OC|124 D OD OC 12:04 12:19|125 D VCU VC|126 D OD OC 09:41 09:54|127 D OD OC 10:21 10:41|128 D OD OC 11:43 12:06|129 D VD VC 10:41 11:23|130 D OD SR|131 D OD OC 11:28 11:39|132 D OD OC 10:02 10:16|301 D VCU VC|302 D OD OC|303 D OD OC|304 D VD VC|305 D OD OC|201 R VD VC 14:50 15:20|202 R OD OC 13:25 13:43|203 R VD VC 14:10 14:50|204 R OD SR|205 R OD OC 09:20 09:37|206 R OD OC 13:09 13:25|207 R OD SR|208 R OD OC 09:40 09:55|209 R OD OC 12:45 13:05|210 R VD VC 12:00 12:40|211 R OD OC 11:45 11:55|212 R OD SR|213 R OD OC 10:05 10:20|214 R VD VC 11:13 11:45|215 R OD OC 10:55 11:10|216 R OD OC 10:37 10:59|217 R VCU VC|218 R OD OC 10:23 10:39|306 R OD OC 15:30 15:45|307 R OD OC 15:55 16:15|308 R VCU VC|101 H OD OC 11:05 11:22|102 H OD OC 09:35 09:45|103 H VD VC 12:10 12:35|104 H VD VC|105 H OD SR|106 H OD OC 09:50 10:00|107 H OD OC|108 H VCU VC|109 H OD OC 10:15 10:30|110 H VD VC 10:00 10:20|111 H OD OC 11:35 11:50|112 H OD OC|113 H VD VC 14:20 15:02|114 H VD VC|115 H VD VC 14:46 15:00|116 H VD VC|219 H VD VC|220 H VD VC|221 H VD VC|222 H OD OC";var W=WS.split("|").map(function(l){var p=l.split(" ");return[+p[0],{D:"Dani",R:"Rafli",H:"Haki"}[p[1]],p[2],p[3],p[4]||"",p[5]||""]});rooms.forEach(function(o){o.k=W.filter(function(x){return x[0]==o.n})[0][3]});
+var cnt=function(k){return rooms.filter(function(o){return o.k==k}).length};
+var NM=["Dani","Rafli","Haki"];
+var RA=NM.map(function(n,i){var c=10+Math.floor(r()*9),t=20,m=24+Math.floor(r()*14),p=Math.round(80+r()*20);return{n:n,c:c,t:t,m:m,p:p,fl:1+i%3}});
+var SEC={Dani:"117-132, 301-305",Rafli:"201-218, 306-308",Haki:"101-116, 219-222"};RA=NM.map(function(n){var a=W.filter(function(x){return x[1]==n}),d=a.filter(function(x){return x[4]&&x[5]}).map(function(x){return tm(x[5])-tm(x[4])});return{n:n,sec:SEC[n],t:a.length,sr:a.filter(function(x){return x[3]=="SR"}).length,vcu:a.filter(function(x){return x[2]=="VCU"}).length,c:a.filter(function(x){return x[3]!="SR"&&x[2]!="VCU"}).length,m:d.length?Math.round(d.reduce(function(s,v){return s+v},0)/d.length):0}});var sb=function(k){return bd(k,COL[k=="VCU"?"VC":k]||"var(--mut)")};var bd=function(t,c){return'<span class="bd" style="--c:'+c+'">'+t+'</span>'};
+var tbl=function(h,rw){return'<div class="wrap"><table><tr>'+h.map(function(x){return"<th>"+x+"</th>"}).join("")+"</tr>"+rw.map(function(q){return"<tr>"+q.map(function(x){return"<td>"+x+"</td>"}).join("")+"</tr>"}).join("")+"</table></div>"};
+var bar=function(l,v,mx,c,sfx){return'<div class="row"><span>'+l+'</span><div class="bar"><i style="width:'+Math.min(100,v/mx*100)+'%;background:'+c+'"></i></div><b>'+v+(sfx||"")+"</b></div>"};
+var kpi=function(l,v,c,e){return'<div class="kpi"><span>'+l+"</span><b"+(c?' style="color:'+c+'"':"")+">"+v+"</b><em style=\"color:var(--mut)\">"+(e||"")+"</em></div>"};
+var pct=function(p){return bd(p+"%",p>=90?"var(--ok)":p>=75?"var(--warn)":"var(--bad)")};
+var V={
+overview:function(){var occ=cnt("OC")+cnt("OD"),dirty=cnt("OD")+cnt("VD")+cnt("SR"),ready=cnt("VI")+cnt("VC"),done=RA.reduce(function(a,b){return a+b.c},0);
+var fl="";for(var f=1;f<=3;f++){var a=rooms.filter(function(o){return o.f==f}),d=a.filter(function(o){return o.k=="VI"||o.k=="VC"||o.k=="OC"}).length;fl+=bar("Lantai "+f,Math.round(d/a.length*100),100,"var(--acc)","%")}
+return'<div class="kpis">'+kpi("Total kamar",61,"","5 tipe kamar")+kpi("Kamar terjual (DRR)",DRR.sold,"var(--vio)","Okupansi "+DRR.occ+"%")+kpi("Belum dibersihkan",dirty,"var(--warn)","Service refused")+kpi("Siap jual",ready,"var(--ok)","VC + Inspected")+kpi("Out of Order",cnt("OOO"),"var(--bad)","Perlu tindak lanjut")+kpi("Kamar selesai hari ini",done,"var(--acc)","Rata-rata "+Math.round(RA.reduce(function(a,b){return a+b.m},0)/RA.length)+" menit")+'</div>'+
+'<div class="g2"><div class="card"><h3>Penjualan kamar (DRR 10 dan 11 Nov)</h3>'+tbl(["","10 Nov","11 Nov","MTD","YTD"],[["Kamar terjual",56,57,585,"6.250"],["Okupansi","91,80%","93,44%","87,18%","86,10%"],["ARR (Rp)","227.373","226.844","223.566","224.309"],["RevPAR (Rp)","208.736","211.969","194.912","-"],["Tamu in-house",83,82,875,"9.840"],["Individual",45,47,433,"4.482"],["WIG",9,7,99,886],["OTA",2,3,53,880],["Reservasi baru",18,18,267,"3.112"],["Walk-in",9,7,99,886],["Cancel",1,2,19,252],["Kamar OO",0,0,7,100]])+'<p class="note">Sumber: DRR 10 dan 11 Nov 2026. MTD dan YTD per 11 Nov.</p></div><div class="card"><h3>Status kamar</h3>'+Object.keys(ST).map(function(k){return bar(ST[k][0],cnt(k),40,COL[k])}).join("")+'</div><div class="card"><h3>Progres per lantai</h3>'+fl+'</div><div class="card"><h3>Room attendant teratas</h3>'+tbl(["Nama","Kamar","Menit/kamar"],RA.slice().sort(function(a,b){return b.c-a.c}).slice(0,5).map(function(a){return[a.n,a.c+"/"+a.t,a.m]}))+'</div><div class="card"><h3>Tipe kamar</h3>'+RD.map(function(t){return bar(t[0],t[1].length+t[2].length,25,"var(--acc)")}).join("")+'</div></div>'},
+attendant:function(){return'<div class="card">'+tbl(["Room Attendant","Kamar","Ditugaskan","Dibersihkan","SR","VC (tanpa kerja)","Menit/kamar"],RA.map(function(a){return[a.n,a.sec,a.t,a.c,a.sr,a.vcu,a.m]}))+'<p class="note">Menit per kamar dihitung dari jam make up yang terbaca di worksheet 11 Nov. SR = service refused.</p>'+'</div>'},
+spv:function(){var n=["Vicky"];return'<div class="card">'+tbl(["Supervisor","Kamar diinspeksi","Lulus","Perlu ulang","Pass rate","Waktu inspeksi (menit)"],n.map(function(x){var t=30+Math.floor(r()*15),rw=Math.floor(r()*5);return[x,t,t-rw,rw,pct(Math.round((t-rw)/t*100)),5+Math.floor(r()*4)]}))+'</div>'},
+checklist:function(){var a=["Lobby & Lift","Koridor lantai 2-6","Koridor lantai 7-11","Toilet umum","Linen room","Laundry & seragam","Gudang chemical","Tangga darurat","Area kolam & gym"];return'<div class="card"><h3>Checklist harian area publik</h3>'+a.map(function(x){var p=Math.round(55+r()*45);return bar(x,p,100,p>=90?"var(--ok)":"var(--warn)","%")}).join("")+'</div>'},
+matrix:function(){var h='<div class="leg">'+Object.keys(ST).map(function(k){return'<span style="--c:'+COL[k]+'">'+ST[k][0]+" ("+cnt(k)+")</span>"}).join("")+"</div>";for(var f=3;f>=1;f--)h+='<div class="fl"><b>Lt '+f+'</b><div class="rooms">'+rooms.filter(function(o){return o.f==f}).map(function(o){return'<div class="rm" style="--c:'+COL[o.k]+'" title="'+o.t+' - '+(o.sm?'Smoking':'Non-Smoking')+' - '+ST[o.k][0]+'">'+o.n+"</div>"}).join("")+"</div></div>";return'<div class="card">'+h+"</div>"},
+worksheet:function(){var rw=[];RA.forEach(function(a){for(var j=0;j<2;j++){var o=pick(rooms);var k=pick(["VD","OD","VD"]);rw.push([a.n,o.n,bd(ST[k][0],COL[k]),pick(["Checkout","Stay-over","Turn-down"]),"0"+(8+Math.floor(r()*5))+":"+pick(["00","15","30","45"]),pick(["12","25","30","18"])+" menit"])}});return'<div class="card">'+tbl(["Attendant","Kamar","Status awal","Jenis","Mulai","Durasi"],rw)+'</div>'},
+audit:function(){var a=["Status kamar diubah","Inspeksi lulus","Inspeksi ditolak","Lost & found dicatat","Request amenities","Laporan kerusakan"],rw=[];for(var j=0;j<12;j++){var m=59-j*4;rw.push(["14:"+(m<10?"0"+m:m),pick(NM),pick(a),pick(rooms).n])}return'<div class="card">'+tbl(["Waktu","User","Aktivitas","Kamar"],rw)+'</div>'},
+worksheet:function(){var rw=W.filter(function(w){return!wf||w[1]==wf}).map(function(w){var d=w[4]&&w[5]?tm(w[5])-tm(w[4])+" menit":"-";return[w[1],w[0],sb(w[2]),sb(w[3]),w[4]||"-",w[5]||"-",d]});return'<div class="card"><h3>Worksheet HK 11 Nov 2026 <select class="btn" style="margin-left:10px" onchange="wf=this.value;go()"><option value="">Semua RA</option>'+NM.map(function(n){return"<option"+(n==wf?" selected":"")+">"+n+"</option>"}).join("")+'</select></h3>'+tbl(["Attendant","Kamar","Status awal","Status akhir","Masuk","Keluar","Durasi"],rw)+'</div>'},
+audit:function(){var rw=W.filter(function(w){return w[5]}).sort(function(a,b){return a[5]<b[5]?1:-1}).slice(0,15).map(function(w){return[w[5],w[1],"Status "+w[2]+" ke "+w[3],w[0]]});return'<div class="card"><h3>Aktivitas terakhir (worksheet 11 Nov)</h3>'+tbl(["Waktu selesai","User","Aktivitas","Kamar"],rw)+'</div>'},
+database:function(){var d=["P","S","M","OFF"],cl={P:"var(--ok)",S:"var(--acc)",M:"var(--vio)",OFF:"var(--mut)"};return'<div class="card"><h3>Master kamar (61 unit)</h3>'+tbl(["Tipe","Jumlah","Smoking","Non-Smoking","Nomor kamar"],RD.map(function(t){var a=t[1].concat(t[2]).sort();return[t[0],a.length,t[1].length,t[2].length,'<div style="white-space:normal;min-width:260px">'+a.join(", ")+'</div>']}))+'</div><div class="card" style="margin-top:14px"><h3>Staff & jadwal minggu ini</h3>'+tbl(["ID","Nama","Jabatan","Sen","Sel","Rab","Kam","Jum","Sab","Min"],NM.map(function(n,i){var q=["HK-0"+(i+1),n,"Room Attendant"];for(var j=0;j<7;j++){var x=j==(i%7)?"OFF":pick(["P","P","S","M"]);q.push(bd(x,cl[x]))}return q}))+'<p class="note">P = pagi, S = siang, M = malam. Master kamar bersumber dari file Sumi_Room_Inspection_August.xlsx.</p></div>'}};
+var M=[["Monitoring & Analytics",[["overview","📊","Executive Overview"],["attendant","🧹","Kinerja Room Attendant"],["spv","📋","Kinerja Room SPV"]]],["Operations & Reports",[["checklist","📝","Report Daily Checklist"],["matrix","🏨","Room Status Matrix (61 Kamar)"],["worksheet","📄","Report Worksheet Attendant"],["audit","📜","Audit Trail & Activity Log"]]],["Administration & Schedule",[["database","🗄️","Database Kamar, Staff & Schedule"]]]];
+var ttl={};M.forEach(function(g){g[1].forEach(function(i){ttl[i[0]]=i[2]})});
+document.getElementById("nav").innerHTML=M.map(function(g){return'<div class="grp">'+g[0]+"</div>"+g[1].map(function(i){return'<button class="nav" data-v="'+i[0]+'"><i>'+i[1]+"</i><span>"+i[2]+"</span></button>"}).join("")}).join("");
+function go(){var v=(location.hash||"#overview").slice(1);if(!V[v])v="overview";document.getElementById("view").innerHTML=V[v]();document.getElementById("ttl").innerHTML=ttl[v]+"<small>Data per 11 Nov 2026</small>";document.querySelectorAll(".nav").forEach(function(b){b.classList.toggle("on",b.dataset.v==v)});document.getElementById("side").classList.remove("open")}
+document.querySelectorAll(".nav").forEach(function(b){b.onclick=function(){location.hash=b.dataset.v}});
+window.addEventListener("hashchange",go);
+document.getElementById("menu").onclick=function(){document.getElementById("side").classList.toggle("open")};
+document.getElementById("th").onclick=function(){var d=document.documentElement;d.dataset.theme=d.dataset.theme=="light"?"dark":"light"};
+go();
+</script>
+</body>
+</html>
